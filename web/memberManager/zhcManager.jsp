@@ -21,11 +21,29 @@
     <script type="text/javascript" src="static/jquery.min.js"></script>
     <script type="text/javascript" src="static/jquery.easyui.min.js"></script>
     <script type="text/javascript">
+        function demo(inp,hid){
+            $.ajax({
+                url:"host/changestrong",
+                type:"post",
+                dataType: "json",
+                data: {hid:hid,strong:inp.value},
+                success:function (data) {
+                    eval("var data="+data);
+                    if(data.success){
+                        $.messager.alert("修改权重信息",data.msg,"info");
+                        $('#dg').datagrid('reload');
+                    }else {
+                        $.messager.alert("修改权重信息",data.msg,"error");
+                    }
+                }
+            })
+        }
         $(function () {
             $('#dg').datagrid({
                 url: 'host/hostInfo',//设置远程加载数据的地址
                 pagination: true,//分页工具栏
                 rownumbers: true,//行号的列
+                checkOnSelect:false,
                 pageNumber: 1,
                 pageSize: 4,//设置每页显示的数量
                 pageList: [2, 4, 6],
@@ -33,7 +51,9 @@
                 toolbar: '#tb',
                 columns: [[
                     {field: "aa", checkbox: true},
-                    {title: "权重", field: "strong", width: 100},
+                    {title: "权重", field: "strong",formatter: function (value, row, index) {
+                            return  "<input type='text'value='"+value+"' style='width: 40px' onblur='demo(this,"+row.hid+")'>";
+                        }, width: 100},
                     {title: "姓名", field: "hname", width: 100},
                     {title: "手机号", field: "hphone", width: 100},
                     {
@@ -149,9 +169,8 @@
                         }
                     })
                 }
-
-
             })
+
 
         })
 

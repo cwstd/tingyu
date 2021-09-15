@@ -63,8 +63,41 @@ public class HostController {
     @ResponseBody
     @RequestMapping("changestatus")
     public boolean changestatus(String hids,String statuss){
-        System.out.println(hids.split(","));
+        String[] split = hids.split(",");
+        String[] split1 = statuss.split(",");
+        int n=0;
+        for(int i=0;i<split.length;i++){
+            Host host = new Host();
+            host.setHid(Integer.valueOf(split[i]));
+            if("1".equals(split1[i])){
+                host.setStatus("0");
+            }else{
+                host.setStatus("1");
+            }
+            if(host.updateById()){
+                n++;
+            }
+        }
+        if(n==split.length){
+            return true;
+        }
         return false;
+    }
+    @ResponseBody
+    @RequestMapping("changestrong")
+    public HostResult changestrong(Host host){
+        boolean b = host.updateById();
+        HostResult hostResult = new HostResult();
+        if(b){
+            hostResult.setSuccess(b);
+            hostResult.setMsg("添加成功！");
+
+        }else {
+            hostResult.setSuccess(b);
+            hostResult.setMsg("添加失败！请重新添加");
+        }
+
+        return hostResult;
     }
 }
 
