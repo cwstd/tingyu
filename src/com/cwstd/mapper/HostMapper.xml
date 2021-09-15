@@ -29,7 +29,7 @@
         </association>
     </resultMap>
     <select id="select1" resultMap="BaseResultMap">
-        select * from t_host as p join t_host_power as pw  on p.hid=pw.hostid
+        select * from t_host as p left join t_host_power as pw  on p.hid=pw.hostid
         <where>
             <if test="hostConfig.hname!=null and hostConfig.hname!=''">
                 <bind name="hosthname" value="'%'+hostConfig.hname+'%'"/>
