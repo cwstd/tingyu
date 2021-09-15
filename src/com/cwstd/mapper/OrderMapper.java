@@ -1,0 +1,16 @@
+package com.cwstd.mapper;
+
+import com.cwstd.pojo.Order;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author ${author}
+ * @since 2021-09-11
+ */
+public interface OrderMapper extends BaseMapper<Order> {
+
+}
