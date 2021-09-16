@@ -21,6 +21,27 @@
     <script type="text/javascript" src="static/jquery.min.js"></script>
     <script type="text/javascript" src="static/jquery.easyui.min.js"></script>
     <script type="text/javascript">
+        //设置日期的格式
+        function myformatter(date){
+            var y = date.getFullYear();
+            var m = date.getMonth()+1;
+            var d = date.getDate();
+            return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+        }
+        function myparser(s) {
+            if (!s) return new Date();
+            var ss = (s.split('-'));
+            var y = parseInt(ss[0], 10);
+            var m = parseInt(ss[1], 10);
+            var d = parseInt(ss[2], 10);
+            if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                return new Date(y, m - 1, d);
+            } else {
+                return new Date();
+            }
+        }
+    </script>
+    <script type="text/javascript">
         function demo(inp,hid){
             $.ajax({
                 url:"host/changestrong",
@@ -36,6 +57,32 @@
                     }
                 }
             })
+        }
+        function jsonDate(inf){
+            var Date="";
+            Date=Date+inf.monthValue+"/"+inf.dayOfMonth+"/"+inf.year;
+            return Date;
+        }
+        function jsonTime(inf){
+            var time="";
+            if(inf.hour<10){
+                time=time+"0"+inf.hour;
+            }else{
+                time=time+inf.hour;
+            }
+            time=time+":";
+            if(inf.minute<10){
+                time=time+"0"+inf.minute;
+            }else{
+                time=time+inf.minute;
+            }
+            time=time+":";
+            if(inf.second<10){
+                time=time+"0"+inf.second;
+            }else{
+                time=time+inf.second;
+            }
+            return time;
         }
         $(function () {
             $('#dg').datagrid({
@@ -174,7 +221,7 @@
                 if(list.length==1){
                     $("#dd1").dialog('open');
                     var hostpower=list[0].hostPower;
-                    console.log(hostpower);
+                    $("#hostid").textbox('setValue',list[0].hid);
                     if(hostpower!=null){
                         if(hostpower.hstar=="0"){
                             $("#hpstar_no").radiobutton({checked:true});
@@ -186,14 +233,39 @@
                         }else{
                             $("#hpOrderPower_yes").radiobutton({checked:true});
                         }
+                        $('#hpstartBegindate').datebox('setValue',jsonDate(hostpower.hpstartBegindate));
+                        $('#hpstarEnddate').datebox('setValue',jsonDate(hostpower.hpstarEnddate));
+                        $('#hpstarBegintime').timespinner('setValue', jsonTime(hostpower.hpstarBegintime));
+                        $('#hpstarEndtime').timespinner('setValue', jsonTime(hostpower.hpstarEndtime));
+                        $('#hpDisStarttime').datebox('setValue',jsonDate(hostpower.hpDisStarttime));
+                        $('#hpDisEndtime').datebox('setValue',jsonDate(hostpower.hpDisEndtime));
                         $('#fm1').form('load', {
                             hpdiscount:hostpower.hpdiscount,
                             hpprice:hostpower.hpprice,
-                            hpcosts:hostpower.hpcosts
+                            hpcosts:hostpower.hpcosts,
+                            hpid:hostpower.hpid
                         });
-                    }else{
 
                     }
+                    //提交表单
+                    $("#addhostpower1").click(function (){
+                        $("#fm1").form('submit',{
+                            success:function (data) {
+                                eval("var data="+data);
+                                if(data.success){
+                                    $.messager.alert("修改主持人权限信息",data.msg,"info");
+                                    $("#dd1").dialog('close');
+                                    $('#dg').datagrid('reload');
+                                    $("#fm1").form('clear');
+                                }else {
+                                    $.messager.alert("修改主持人权限信息",data.msg,"error");
+                                    $("#dd1").dialog('close');
+                                    $("#fm1").form('clear');
+                                }
+                            }
+                        })
+                    })
+
                 }else if(list.length>0){
                     $.messager.alert("修改用户权限信息","请选择一个用户","info");
                 }else{
@@ -269,8 +341,10 @@
 <%--主持人权限增加--%>
 <div id="dd1" class="easyui-dialog" title="增加主持人权限信息" style="width:600px;height:500px;"
      data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
-    <form id="fm1" action="host/addhostpower" method="post">
+    <form id="fm1" action="hostPower/addhostpower" method="post">
             <table style="margin: auto;margin-top: 40px;border-collapse:separate; border-spacing:0px 10px;">
+                <input id="hpid" name="hpid" class="easyui-textbox" type="hidden" >
+                <input id="hostid" name="hostid" class="easyui-textbox" type="hidden" >
                 <tr>
                     <td>星推荐</td>
                     <td>
@@ -281,8 +355,8 @@
                 <tr>
                     <td>星推日期:</td>
                     <td>
-                        <input  type="text" class="easyui-datebox" name="hpstartBegindate" required="required">-
-                        <input  type="text" class="easyui-datebox" name="hpstarEnddate" required="required">
+                        <input id="hpstartBegindate" data-options="formatter:myformatter,parser:myparser" type="text" class="easyui-datebox" name="hpstartBegindate" required="required">-
+                        <input id="hpstarEnddate" data-options="formatter:myformatter,parser:myparser" type="text" class="easyui-datebox" name="hpstarEnddate" required="required">
                     </td>
                 </tr>
                 <tr>
@@ -295,8 +369,8 @@
                 <tr>
                     <td>星推时间</td>
                     <td>
-                        <input  type="text" class="easyui-timespinner" name="hpstarBegintime" required="required">-
-                        <input  type="text" class="easyui-timespinner" name="hpstarEndtime"  required="required">
+                        <input id="hpstarBegintime" data-options="showSeconds:true"  type="text" class="easyui-timespinner" name="hpstarBegintime" required="required">-
+                        <input id="hpstarEndtime" data-options="showSeconds:true"  type="text" class="easyui-timespinner" name="hpstarEndtime"  required="required">
                     </td>
                 </tr>
                 <tr>
@@ -308,8 +382,8 @@
                 <tr>
                     <td>折扣时间:</td>
                     <td>
-                        <input name="hpDisStarttime"  type="text" class="easyui-datebox" required="required">-
-                        <input name="hpDisEndtime" type="text" class="easyui-datebox" required="required">
+                        <input id="hpDisStarttime" data-options="formatter:myformatter,parser:myparser" name="hpDisStarttime"  type="text" class="easyui-datebox" required="required">-
+                        <input id="hpDisEndtime" data-options="formatter:myformatter,parser:myparser" name="hpDisEndtime" type="text" class="easyui-datebox" required="required">
                     </td>
                 </tr>
                 <tr>
