@@ -174,10 +174,22 @@
                 if(list.length==1){
                     $("#dd1").dialog('open');
                     var hostpower=list[0].hostPower;
+                    console.log(hostpower);
                     if(hostpower!=null){
+                        if(hostpower.hstar=="0"){
+                            $("#hpstar_no").radiobutton({checked:true});
+                        }else{
+                            $("#hpstar_yes").radiobutton({checked:true});
+                        }
+                        if(hostpower.hpOrderPower=="0"){
+                            $("#hpOrderPower_no").radiobutton({checked:true});
+                        }else{
+                            $("#hpOrderPower_yes").radiobutton({checked:true});
+                        }
                         $('#fm1').form('load', {
-                            hpstar:
-                            hpprice:6
+                            hpdiscount:hostpower.hpdiscount,
+                            hpprice:hostpower.hpprice,
+                            hpcosts:hostpower.hpcosts
                         });
                     }else{
 
@@ -262,8 +274,8 @@
                 <tr>
                     <td>星推荐</td>
                     <td>
-                        <input class="easyui-checkbox" name="hpstar" labelPosition="after"  value="1" label="是:">
-                        <input class="easyui-checkbox" name="hpstar" labelPosition="after"  value="0" label="否:">
+                        <input id="hpstar_yes" class="easyui-radiobutton" name="hpstar" labelPosition="after"  value="1" label="是:">
+                        <input id="hpstar_no" class="easyui-radiobutton" name="hpstar" labelPosition="after"  value="0" label="否:">
                     </td>
                 </tr>
                 <tr>
@@ -276,15 +288,15 @@
                 <tr>
                     <td>自填订单:</td>
                     <td>
-                        <input class="easyui-checkbox" name="hpOrderPower"  labelPosition="after"  value="1" label="是:">
-                        <input class="easyui-checkbox" name="hpOrderPower" labelPosition="after"  value="0" label="否:">
+                        <input id="hpOrderPower_yes" class="easyui-radiobutton" name="hpOrderPower"  labelPosition="after"  value="1" label="是:">
+                        <input id="hpOrderPower_no" class="easyui-radiobutton" name="hpOrderPower" labelPosition="after"  value="0" label="否:">
                     </td>
                 </tr>
                 <tr>
                     <td>星推时间</td>
                     <td>
-                        <input  type="text" class="easyui-datebox" name="hpstarBegintime" required="required">-
-                        <input  type="text" class="easyui-datebox" name="hpstarEndtime"  required="required">
+                        <input  type="text" class="easyui-timespinner" name="hpstarBegintime" required="required">-
+                        <input  type="text" class="easyui-timespinner" name="hpstarEndtime"  required="required">
                     </td>
                 </tr>
                 <tr>
@@ -309,7 +321,7 @@
                 <tr>
                     <td>管理费</td>
                     <td>
-                        <input name="hname" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
+                        <input name="hpcosts" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
                     </td>
                 </tr>
                 <tr>
