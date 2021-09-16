@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/hostPower")
 public class HostPowerController {
+
 @Autowired
 private IHostPowerService iHostPowerService;
     @ResponseBody
@@ -47,5 +48,23 @@ private IHostPowerService iHostPowerService;
         }
         return hostResult;
  }
+ @ResponseBody
+ @RequestMapping("addhostpowers")
+    public HostResult addHostPowers(HostPower hostPower,String hostids){
+        boolean b=false;
+        System.out.println(hostPower);
+        System.out.println(hostids);
+        HostResult hostResult = new HostResult();
+
+        if(b){
+            hostResult.setSuccess(b);
+
+
+        }else {
+            hostResult.setSuccess(b);
+            hostResult.setMsg("添加失败！请重新添加");
+        }
+        return hostResult;
+    }
 }
 

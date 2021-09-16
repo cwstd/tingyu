@@ -272,6 +272,38 @@
                     $.messager.alert("修改用户权限信息","请选择用户","info");
                 }
             })
+            //批量操作
+            $("#addHostPowerS").click(function () {
+                var list=$("#dg").datagrid('getSelections');
+                if(list.length>0){
+                    var hostids="";
+                    $("#dd1").dialog('open');
+                    for(var i=0;i<list.length;i++){
+                        hostids=hostids+list[i].hid+",";
+                    }
+                    console.log(hostids);
+                    $("#hostids").textbox('setValue',hostids);
+                    $("#addhostpower2").click(function (){
+                        $("#fm2").form('submit',{
+                            success:function (data) {
+                                eval("var data="+data);
+                                if(data.success){
+                                    $.messager.alert("修改主持人权限信息",data.msg,"info");
+                                    $("#dd2").dialog('close');
+                                    $('#dg').datagrid('reload');
+                                    $("#fm2").form('clear');
+                                }else {
+                                    $.messager.alert("修改主持人权限信息",data.msg,"error");
+                                    $("#dd2").dialog('close');
+                                    $("#fm2").form('clear');
+                                }
+                            }
+                        })
+                    })
+                }else{
+                    $.messager.alert("修改账号状态","请选中需要修改的账号","info");
+                }
+            })
 
 
         })
@@ -315,10 +347,10 @@
     <table id="dg"></table>
 </div>
 <div id="tb">
-    <a id="addHost" hresf="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加主持人</a>
+    <a id="addHost" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加主持人</a>
     <a id="addHostPower" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">权限设置</a>
     <a id="changestatus" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">账号禁用|启用</a>
-    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">批量操作</a>
+    <a id="addHostPowerS" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">批量操作</a>
 </div>
 <%--主持人增加--%>
 <div id="dd" class="easyui-dialog" title="增加主持人信息" style="width:400px;height:300px;"
@@ -389,7 +421,7 @@
                 <tr>
                     <td>价格</td>
                     <td>
-                        <input name="hpprice" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
+                        <input id="hpprice" name="hpprice" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
                     </td>
                 </tr>
                 <tr>
@@ -406,7 +438,72 @@
             </table>
     </form>
 </div>
-
+<div id="dd2" class="easyui-dialog" title="批量主持人权限信息" style="width:600px;height:500px;"
+     data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
+    <form id="fm2" action="hostPower/addhostpowers" method="post">
+        <table style="margin: auto;margin-top: 40px;border-collapse:separate; border-spacing:0px 10px;">
+            <input id="hostids" name="hostids" class="easyui-textbox" type="hidden" >
+            <tr>
+                <td>星推荐</td>
+                <td>
+                    <input  class="easyui-radiobutton" name="hpstar" labelPosition="after"  value="1" label="是:">
+                    <input  class="easyui-radiobutton" name="hpstar" labelPosition="after"  value="0" label="否:">
+                </td>
+            </tr>
+            <tr>
+                <td>星推日期:</td>
+                <td>
+                    <input  data-options="formatter:myformatter,parser:myparser" type="text" class="easyui-datebox" name="hpstartBegindate" required="required">-
+                    <input  data-options="formatter:myformatter,parser:myparser" type="text" class="easyui-datebox" name="hpstarEnddate" required="required">
+                </td>
+            </tr>
+            <tr>
+                <td>自填订单:</td>
+                <td>
+                    <input  class="easyui-radiobutton" name="hpOrderPower"  labelPosition="after"  value="1" label="是:">
+                    <input  class="easyui-radiobutton" name="hpOrderPower" labelPosition="after"  value="0" label="否:">
+                </td>
+            </tr>
+            <tr>
+                <td>星推时间</td>
+                <td>
+                    <input data-options="showSeconds:true"  type="text" class="easyui-timespinner" name="hpstarBegintime" required="required">-
+                    <input data-options="showSeconds:true"  type="text" class="easyui-timespinner" name="hpstarEndtime"  required="required">
+                </td>
+            </tr>
+            <tr>
+                <td>折扣:</td>
+                <td>
+                    <input name="hpdiscount" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
+                </td>
+            </tr>
+            <tr>
+                <td>折扣时间:</td>
+                <td>
+                    <input  data-options="formatter:myformatter,parser:myparser" name="hpDisStarttime"  type="text" class="easyui-datebox" required="required">-
+                    <input  data-options="formatter:myformatter,parser:myparser" name="hpDisEndtime" type="text" class="easyui-datebox" required="required">
+                </td>
+            </tr>
+            <tr>
+                <td>价格</td>
+                <td>
+                    <input  name="hpprice" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
+                </td>
+            </tr>
+            <tr>
+                <td>管理费</td>
+                <td>
+                    <input name="hpcosts" class="easyui-textbox"  iconWidth="28" style="width:50%;height:30px;padding:10px;">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a href="javascript:void(0)" id="addhostpower2" class="easyui-linkbutton c3" style="width:120px">修改权限信息</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 </div>
 </body>
 </html>
