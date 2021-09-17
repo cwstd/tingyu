@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IHostPowerService extends IService<HostPower> {
 
+    public boolean updateHostPower(HostPower hostPower,String hostids);
 }

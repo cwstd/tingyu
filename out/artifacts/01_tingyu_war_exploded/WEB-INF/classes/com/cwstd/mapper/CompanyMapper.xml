@@ -15,4 +15,20 @@
         <result column="ordernumber" property="ordernumber" />
     </resultMap>
 
+    <select id="selectAll" resultType="com.cwstd.pojo.Company">
+        select * from t_company
+        <where>
+            <if test="companyConfig.cname!='' and companyConfig.cname!=null">
+            <bind name="companyname" value="'%'+companyConfig.cname+'%'"/>
+               and cname like #{companyname}
+            </if>
+            <if test="companyConfig.status!='' and companyConfig.status!=null">
+                and status=#{companyConfig.status}
+            </if>
+        </where>
+        ORDER BY ordernumber
+        <if test="companyConfig.ordernumber!='' and companyConfig.ordernumber!=null">
+            ${companyConfig.ordernumber}
+        </if>
+    </select>
 </mapper>

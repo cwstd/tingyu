@@ -48,21 +48,18 @@ private IHostPowerService iHostPowerService;
         }
         return hostResult;
  }
- @ResponseBody
- @RequestMapping("addhostpowers")
+     @ResponseBody
+     @RequestMapping("addhostpowers")
     public HostResult addHostPowers(HostPower hostPower,String hostids){
         boolean b=false;
-        System.out.println(hostPower);
-        System.out.println(hostids);
-        HostResult hostResult = new HostResult();
-
+     b = iHostPowerService.updateHostPower(hostPower, hostids);
+     HostResult hostResult = new HostResult();
         if(b){
             hostResult.setSuccess(b);
-
-
+            hostResult.setMsg("批量操作成功！");
         }else {
             hostResult.setSuccess(b);
-            hostResult.setMsg("添加失败！请重新添加");
+            hostResult.setMsg("批量操作失败！");
         }
         return hostResult;
     }

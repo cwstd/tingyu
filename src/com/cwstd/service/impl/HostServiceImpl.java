@@ -30,7 +30,6 @@ public class HostServiceImpl extends ServiceImpl<HostMapper, Host> implements IH
     public PageResult<Host> seleFindAll(Integer rows, Integer page, HostConfig hostConfig) {
         IPage<Host> ipage=new Page<>(page,rows);
         IPage<Host> hosts = hostMapper.select1(ipage, hostConfig);
-        System.out.println(hosts.getRecords().toArray());
         PageResult<Host> pageResult = new PageResult<>();
         pageResult.setTotal(hosts.getTotal());
         pageResult.setRows(hosts.getRecords());

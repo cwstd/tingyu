@@ -277,13 +277,15 @@
                 var list=$("#dg").datagrid('getSelections');
                 if(list.length>0){
                     var hostids="";
-                    $("#dd1").dialog('open');
+                    $("#dd2").dialog('open');
                     for(var i=0;i<list.length;i++){
                         hostids=hostids+list[i].hid+",";
                     }
                     console.log(hostids);
                     $("#hostids").textbox('setValue',hostids);
-                    $("#addhostpower2").click(function (){
+                    console.log("dasda")
+                    $("#plcz").click(function (){
+                        console.log("dasda")
                         $("#fm2").form('submit',{
                             success:function (data) {
                                 eval("var data="+data);
@@ -438,7 +440,7 @@
             </table>
     </form>
 </div>
-<div id="dd2" class="easyui-dialog" title="批量主持人权限信息" style="width:600px;height:500px;"
+<div id="dd2" class="easyui-dialog" title="批量操作主持人权限信息" style="width:600px;height:500px;"
      data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
     <form id="fm2" action="hostPower/addhostpowers" method="post">
         <table style="margin: auto;margin-top: 40px;border-collapse:separate; border-spacing:0px 10px;">
@@ -498,7 +500,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="javascript:void(0)" id="addhostpower2" class="easyui-linkbutton c3" style="width:120px">修改权限信息</a>
+                    <a href="javascript:void(0)" id="plcz" class="easyui-linkbutton c3" style="width:120px">修改权限信息</a>
                 </td>
             </tr>
         </table>

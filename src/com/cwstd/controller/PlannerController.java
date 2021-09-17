@@ -1,9 +1,12 @@
 package com.cwstd.controller;
 
 
+import com.cwstd.pojo.PageResult;
+import com.cwstd.pojo.Planner;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -16,6 +19,13 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequestMapping("/planner")
 public class PlannerController {
+    @ResponseBody
+    @RequestMapping("plannerInfo")
+    public PageResult<Planner> plannerInfo(Integer page,Integer rows){
+        PageResult<Planner> plannerPageResult = new PageResult<>();
+
+        return plannerPageResult;
+    }
 
 }
 
