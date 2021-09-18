@@ -76,5 +76,19 @@ public class CompanyController {
         hostResult.setMsg("修改公司状态成功！");
         return hostResult;
     }
+    @ResponseBody
+    @RequestMapping("changeCompany")
+    public HostResult changeCompany(Company company){
+        HostResult hostResult = new HostResult();
+        boolean b = company.updateById();
+        hostResult.setSuccess(b);
+        if(b){
+            hostResult.setMsg("修改公司信息成功！");
+            return hostResult;
+        }else {
+            hostResult.setMsg("修改公司信息失败！");
+        }
+        return hostResult;
+    }
 }
 

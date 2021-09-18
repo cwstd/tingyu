@@ -24,6 +24,7 @@
         $(function () {
             // 添加工具窗口
             $("#tb").datagrid({toolbar: "#tb"});
+
             $('#dg').datagrid({
                 url: 'company/companyInfo',//设置远程加载数据的地址
                 pagination: true,//分页工具栏
@@ -86,7 +87,7 @@
                 })
             })
             $("#changestatus").click(function () {
-                ;
+
                 var a=$("#dg").datagrid('getSelections');
                 console.log(a)
                 if(a.length>0){
@@ -118,36 +119,71 @@
                 }
             })
             $("#plannerlist").click(function () {
-                $("#dd2").dialog('open');
-                $('#dg2').datagrid({
-                    url: 'planner/plannerInfo',//设置远程加载数据的地址
-                    pagination: true,//分页工具栏
-                    rownumbers: true,//行号的列
-                    checkOnSelect: false,
-                    pageNumber: 1,
-                    pageSize: 4,//设置每页显示的数量
-                    pageList: [2, 4, 6],
-                    title: "查询结果",
-                    columns: [[
-                        {field: 'nid', title: '编号', width: 100},
-                        {field: 'nname', title: '策划师姓名', width: 150},
-                        {field: 'nphone', title: '手机号', width: 100},
-                        {field: 'addtime', title: '入职时间', formatter:
-                                function (value, row, index) {
-                                    return value.year+"/"+value.monthValue+"/"+value.dayOfMonth+" "+value.hour+":"+value.minute+":"+value.second;
-                                }, width: 180
+                var a=$("#dg").datagrid('getSelections');
+                if(a.length==1){
+                    $("#dd2").dialog('open');
+                    $('#dg2').datagrid({
+                        url: 'planner/plannerInfo',//设置远程加载数据的地址
+                        rownumbers: true,//行号的列
+                        checkOnSelect: false,
+                        queryParams: {
+                            cid:a[0].cid,
                         },
-                        {field: 'status', title: '账号状态', formatter:
-                                function (value, row, index) {
-                                    if(value=="1"){
-                                        return "正常";
-                                    }else {
-                                        return "禁用";
-                                    }
-                                }, width: 100},
-                        {field: 'ordernumber', title: '订单量', width: 100},
-                    ]]
-                });
+                        title: "查询结果",
+                        columns: [[
+                            {field: 'nname', title: '策划师姓名', width: 100},
+                            {field: 'nphone', title: '手机号', width: 100},
+                            {field: 'addtime', title: '入职时间', formatter:
+                                    function (value, row, index) {
+                                        return value.year+"/"+value.monthValue+"/"+value.dayOfMonth+" "+value.hour+":"+value.minute+":"+value.second;
+                                    }, width: 180
+                            },
+                            {field: 'status', title: '账号状态', formatter:
+                                    function (value, row, index) {
+                                        if(value=="1"){
+                                            return "正常";
+                                        }else {
+                                            return "禁用";
+                                        }
+                                    }, width: 100},
+                            {field: 'ordernumber', title: '订单量', width: 100},
+                        ]]
+                    });
+                }else{
+                    $.messager.alert("查询设计师","只能选择一个公司","error");
+                }
+
+            })
+            $("#changCopany").click(function () {
+                var a=$("#dg").datagrid('getSelections');
+                if(a.length==1){
+                    $("#dd3").dialog('open');
+                    $("#cid").textbox('setValue',a[0].cid);
+                    $("#cname1").textbox('setValue',a[0].cname);
+                    $("#ceo").textbox('setValue',a[0].ceo);
+                    $("#cphone").textbox('setValue',a[0].cphone)
+                    $("#cmail").textbox('setValue',a[0].cmail)
+                    $("#addCompany3").click(function () {
+                        $("#fm4").form('submit',{
+                            success:function (data) {
+                                eval("var data="+data);
+                                if(data.success){
+                                    $.messager.alert("修改公司状态",data.msg,"info");
+                                    $("#dd3").dialog('close');
+                                    $('#dg').datagrid('reload');
+                                    $("#fm4").form('clear');
+                                }else{
+                                    $.messager.alert("修改公司状态",data.msg,"error");
+                                    $("#dd3").dialog('close');
+                                    $("#fm4").form('clear');
+                                }
+                            }
+                        })
+                    })
+                }else{
+                    $.messager.alert("修改公司信息","只能选择一个公司","error");
+                }
+
             })
         })
     </script>
@@ -177,7 +213,7 @@
 </div>
 <div id="tb">
     <a id="addCompany" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加公司</a>
-    <a id="addHostPower" href="javascript:void(0)" class="easyui-linkbutton"
+    <a id="changCopany" href="javascript:void(0)" class="easyui-linkbutton"
        data-options="iconCls:'icon-add',plain:true">编辑公司</a>
     <a id="plannerlist" href="javascript:void(0)" class="easyui-linkbutton"
        data-options="iconCls:'icon-edit',plain:true">策划师列表</a>
@@ -236,7 +272,34 @@ data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
             </table>
         </form>
 </div>
-<div id="dd2" class="easyui-dialog" title="策划师列表" style="width:600px;height:350px;"
+<div id="dd3" class="easyui-dialog" title="修改公司" style="width:450px;height:400px;"
+     data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
+    <form id="fm4" action="company/changeCompany" method="post">
+        <table style="margin: auto;margin-top: 35px;border-collapse:separate; border-spacing:0px 10px;">
+            <input id="cid" name="cid" class="easyui-textbox"  type="hidden">
+            <tr>
+                <td>公司名称:</td>
+                <td><input id="cname1" name="cname" class="easyui-textbox"  iconWidth="28" style="width:200px;height:30px;padding:10px;"></td>
+            </tr>
+            <tr>
+                <td>公司法人</td>
+                <td><input id="ceo" name="ceo" class="easyui-textbox"  iconWidth="28" style="width:200px;height:30px;padding:10px;"></td>
+            </tr>
+            <tr>
+                <td>公司座机</td>
+                <td><input id="cphone" name="cphone" class="easyui-textbox"  iconWidth="28" style="width:200px;height:30px;padding:10px;"></td>
+            </tr>
+            <tr>
+                <td>公司邮箱</td>
+                <td><input id="cmail" name="cmail" class="easyui-textbox"  iconWidth="28" style="width:200px;height:30px;padding:10px;"></td>
+            </tr>
+            <tr>
+                <td colspan="2"> <a href="javascript:void(0)" id="addCompany3" class="easyui-linkbutton c3" style="width:120px">确定修改</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="dd2" class="easyui-dialog" title="策划师列表" style="width:650px;height:350px;"
      data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
     <table id="dg2"></table>
 </div>
