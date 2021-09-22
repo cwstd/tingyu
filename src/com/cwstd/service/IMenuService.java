@@ -23,4 +23,11 @@ public interface IMenuService extends IService<Menu> {
      * @return
      */
     List<TreeResult> selAllMenuInfoService(String id);
+
+    /***
+     * 同步加载树
+     * @param id
+     * @return
+     */
+    List<TreeResult> selAllMenuInfoService2(String id);
 }

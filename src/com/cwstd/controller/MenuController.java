@@ -1,10 +1,7 @@
 package com.cwstd.controller;
 
 
-import com.cwstd.pojo.Admin;
-import com.cwstd.pojo.HostResult;
-import com.cwstd.pojo.Menu;
-import com.cwstd.pojo.TreeResult;
+import com.cwstd.pojo.*;
 import com.cwstd.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +41,13 @@ public class MenuController {
         return list;
     }
     @ResponseBody
+    @RequestMapping("menuAllInfo2")
+    public List<TreeResult> menuAllInfo2(@RequestParam(defaultValue = "0") String id){
+        List<TreeResult> list=iMenuService.selAllMenuInfoService2(id);
+        System.out.println(list);
+        return list;
+    }
+    @ResponseBody
     @RequestMapping("addMenu")
     public HostResult addMenu(Menu menu){
         HostResult hostResult = new HostResult();
@@ -61,6 +65,35 @@ public class MenuController {
         }else{
             hostResult.setSuccess(false);
             hostResult.setMsg("增加菜单失败！");
+        }
+        return hostResult;
+    }
+    @ResponseBody
+    @RequestMapping("changeMenu")
+    public HostResult changeMenu(Menu menu){
+        System.out.println(menu);
+        HostResult hostResult = new HostResult();
+        boolean b = menu.updateById();
+        hostResult.setSuccess(b);
+        if(b){
+            hostResult.setMsg("修改菜单信息成功！");
+        }else{
+            hostResult.setMsg("修改菜单信息失败！");
+        }
+        return hostResult;
+    }
+    @ResponseBody
+    @RequestMapping("deleMenu")
+    public HostResult deleMenu( Integer mid){
+        HostResult hostResult = new HostResult();
+        Menu menu = new Menu();
+        menu.setMid(mid);
+        boolean b = menu.deleteById();
+        hostResult.setSuccess(b);
+        if(b){
+            hostResult.setMsg("删除菜单成功！");
+        }else{
+            hostResult.setMsg("删除菜单失败！");
         }
         return hostResult;
     }

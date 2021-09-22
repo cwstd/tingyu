@@ -50,19 +50,53 @@
                     })
                 })
             })
-            //修改节点
+            //修改菜单
             $("#changeMenu").click(function () {
-                $("#dd2").dialog('open');
-                var node=$("#tt").tree('getSelected');
-                console.log(node);
-                console.log(node.id);
-                console.log(node.map.url);
-                console.log(node.map.mdesc);
-                $("#pid").textbox('setValue',node.id)
-                $("#mname").textbox('setValue',node.mname)
-                $("#url").textbox('setValue',node.url)
-                $("#mdesc").textbox('setValue',node.mdesc)
 
+                var node=$("#tt").tree('getSelected');
+                // 数据回显
+                $("#pid").textbox('setValue',node.id);
+                $("#mname").textbox('setValue',node.text);
+                $("#url").textbox('setValue',node.map.url);
+                $("#mdesc").textbox('setValue',node.map.mdesc);
+                $("#dd2").dialog('open');
+                $("#changemenu2").click(function () {
+                    // 提交表单
+                    $("#fm3").form('submit',{
+                        success:function (data) {
+                            eval("var data="+data);
+                            if(data.success){
+                                $.messager.alert("修改菜单",data.msg,"info");
+                                $("#dd2").dialog('close');
+                                $("#fm3").form('reset');
+                            }else{
+                                $.messager.alert("修改菜单",data.msg,"error");
+                                $("#dd2").dialog('close');
+                                $("#fm3").form('reset');
+                            }
+                        }
+                    })
+                })
+            })
+            $("#remove").click(function () {
+                var node=$("#tt").tree('getSelected');
+                if(node.map.isparent=="0"){
+                    $.ajax({
+                        url:"menu/deleMenu" ,
+                        data:{mid:node.id},
+                        dataType:"json",
+                        type:"post",
+                        success:function (data) {
+                            if(data.success){
+                                $.messager.alert("清除菜单",data.msg,"info");
+                            }else{
+                                $.messager.alert("清除菜单",data.msg,"error");
+                            }
+                        }
+                    })
+                }else{
+                    $.messager.alert("删除菜单","此菜单有子菜单无法删除！","error");
+                }
             })
         })
 
@@ -81,7 +115,7 @@
                     <td><a id="changeMenu" href="javascript:void(0)" class="easyui-linkbutton" data-options="">编辑菜单</a></td>
                 </tr>
                 <tr>
-                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="">清除菜单</a></td>
+                    <td><a id="remove" href="javascript:void(0)" class="easyui-linkbutton" data-options="">清除菜单</a></td>
                 </tr>
                 <tr>
                     <td><a id="reload" href="javascript:void(0)" class="easyui-linkbutton" data-options="">刷新菜单</a></td>
@@ -118,9 +152,9 @@
 </div>
 <div id="dd2" class="easyui-dialog" title="增加公司" style="width:450px;height:300px;"
      data-options="iconCls:'icon-save',resizable:false,modal:true,closed:true">
-    <form id="fm3" action="menu/addMenu" method="post">
+    <form id="fm3" action="menu/changeMenu" method="post">
         <table style="margin: auto;margin-top: 35px;border-collapse:separate; border-spacing:0px 10px;">
-            <td><input id="pid" name="pid" class="easyui-textbox" type="hidden"></td>
+            <td><input id="pid" name="mid" class="easyui-textbox" type="hidden"></td>
             <tr>
                 <td>菜单名称:</td>
                 <td><input id="mname" name="mname" class="easyui-textbox"  iconWidth="28" style="width:200px;height:30px;padding:10px;"></td>

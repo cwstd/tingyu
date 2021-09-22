@@ -1,6 +1,7 @@
 package com.cwstd.pojo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class TreeResult {
@@ -9,16 +10,25 @@ public class TreeResult {
     private String state;
     private TreeResult treeResult;
     private HashMap<String,Object> map;
-
+    private List<TreeResult> children;
     public TreeResult() {
     }
 
-    public TreeResult(Integer id, String text, String state, TreeResult treeResult, HashMap<String, Object> map) {
+    public TreeResult(Integer id, String text, String state, TreeResult treeResult, HashMap<String, Object> map, List<TreeResult> children) {
         this.id = id;
         this.text = text;
         this.state = state;
         this.treeResult = treeResult;
         this.map = map;
+        this.children = children;
+    }
+
+    public List<TreeResult> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<TreeResult> children) {
+        this.children = children;
     }
 
     public Integer getId() {
@@ -66,12 +76,12 @@ public class TreeResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TreeResult that = (TreeResult) o;
-        return Objects.equals(id, that.id) && Objects.equals(text, that.text) && Objects.equals(state, that.state) && Objects.equals(treeResult, that.treeResult) && Objects.equals(map, that.map);
+        return Objects.equals(id, that.id) && Objects.equals(text, that.text) && Objects.equals(state, that.state) && Objects.equals(treeResult, that.treeResult) && Objects.equals(map, that.map) && Objects.equals(children, that.children);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, state, treeResult, map);
+        return Objects.hash(id, text, state, treeResult, map, children);
     }
 
     @Override
@@ -82,6 +92,7 @@ public class TreeResult {
                 ", state='" + state + '\'' +
                 ", treeResult=" + treeResult +
                 ", map=" + map +
+                ", children=" + children +
                 '}';
     }
 }
