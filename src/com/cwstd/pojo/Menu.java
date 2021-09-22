@@ -1,10 +1,12 @@
 package com.cwstd.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -33,7 +35,19 @@ public class Menu extends Model<Menu> {
     private String url;
 
     private String mdesc;
+    @TableField(exist = false)
+    private List<Object> list;
 
+    public List<Object> getList() {
+        return list;
+    }
+
+    public void setList(List<Object> list) {
+        this.list = list;
+    }
+
+    public Menu() {
+    }
 
     public Integer getMid() {
         return mid;
@@ -99,13 +113,14 @@ public class Menu extends Model<Menu> {
     @Override
     public String toString() {
         return "Menu{" +
-        "mid=" + mid +
-        ", mname=" + mname +
-        ", pid=" + pid +
-        ", isparent=" + isparent +
-        ", status=" + status +
-        ", url=" + url +
-        ", mdesc=" + mdesc +
-        "}";
+                "mid=" + mid +
+                ", mname='" + mname + '\'' +
+                ", pid=" + pid +
+                ", isparent='" + isparent + '\'' +
+                ", status='" + status + '\'' +
+                ", url='" + url + '\'' +
+                ", mdesc='" + mdesc + '\'' +
+                ", list=" + list +
+                '}';
     }
 }

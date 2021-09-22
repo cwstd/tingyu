@@ -16,4 +16,18 @@ import java.util.List;
  */
 public interface IMenuService extends IService<Menu> {
     List<TreeResult> selMenuInfoService(String id,Integer aid);
+
+    /**
+     * 查找所有菜单信息
+     * @param id
+     * @return
+     */
+    List<TreeResult> selAllMenuInfoService(String id);
+
+    /***
+     * 同步加载树
+     * @param id
+     * @return
+     */
+    List<TreeResult> selAllMenuInfoService2(String id);
 }

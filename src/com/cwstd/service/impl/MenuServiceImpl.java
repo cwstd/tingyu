@@ -55,6 +55,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("isparent",e1.getIsparent());
             hashMap.put("url",e1.getUrl());
+            hashMap.put("mdesc",e1.getMdesc());
+            System.out.println(hashMap.toString());
             treeResult.setMap(hashMap);
             if("1".equals(e1.getIsparent())){
                 treeResult.setState("closed");
@@ -64,5 +66,61 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             listTreeResult.add(treeResult);
         }
         return listTreeResult;
+    }
+
+    @Override
+    public List<TreeResult> selAllMenuInfoService(String id) {
+        QueryWrapper<Menu> objectQueryWrapper2 = new QueryWrapper<>();
+        objectQueryWrapper2.eq("pid",id);
+        List<Menu> list = menuMapper.selectList(objectQueryWrapper2);
+        List<TreeResult> listTreeResult=new ArrayList<>();
+        for(Object e:list) {
+            Menu e1 = (Menu) e;
+            TreeResult treeResult = new TreeResult();
+            treeResult.setId(e1.getMid());
+            treeResult.setText(e1.getMname());
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("isparent",e1.getIsparent());
+            hashMap.put("url",e1.getUrl());
+            hashMap.put("mdesc",e1.getMdesc());
+            treeResult.setMap(hashMap);
+            if("1".equals(e1.getIsparent())){
+                treeResult.setState("closed");
+            }else{
+                treeResult.setState("open");
+            }
+            listTreeResult.add(treeResult);
+        }
+        return listTreeResult;
+    }
+
+    public List<TreeResult> selchildren(List<Menu> list,Integer pid){
+
+        List<TreeResult> listTreeResult=new ArrayList<>();
+        for(Menu e1:list){
+            if(e1.getPid()==pid){
+                TreeResult treeResult = new TreeResult();
+                treeResult.setId(e1.getMid());
+                treeResult.setText(e1.getMname());
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("isparent",e1.getIsparent());
+                hashMap.put("url",e1.getUrl());
+                hashMap.put("mdesc",e1.getMdesc());
+                treeResult.setMap(hashMap);
+                if("1".equals(e1.getIsparent())){
+                    List<TreeResult> selchildren = selchildren(list,e1.getMid());
+                    treeResult.setChildren(selchildren);
+                }
+                listTreeResult.add(treeResult);
+            }
+
+        }
+        return listTreeResult;
+    }
+    @Override
+    public List<TreeResult> selAllMenuInfoService2(String id) {
+        List<Menu> menus = menuMapper.selectList(null);
+        List<TreeResult> selchildren = selchildren(menus, 0);
+        return selchildren;
     }
 }
