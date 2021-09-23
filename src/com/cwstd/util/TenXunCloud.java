@@ -59,11 +59,11 @@ public class TenXunCloud {
              * sms helper: https://cloud.tencent.com/document/product/382/3773 */
 
             /* 短信应用ID: 短信SdkAppId在 [短信控制台] 添加应用后生成的实际SdkAppId，示例如1400006666 */
-            String sdkAppId = "1400575358";
+            String sdkAppId = "";
             req.setSmsSdkAppid(sdkAppId);
 
             /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台] 查看 */
-            String signName = "ting域项目";
+            String signName = "";
             req.setSign(signName);
 
 
@@ -80,7 +80,7 @@ public class TenXunCloud {
             req.setExtendCode(extendCode);
 
             /* 模板 ID: 必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台] 查看 */
-            String templateId = "1134498";
+            String templateId = "";
             req.setTemplateID(templateId);
 
             /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
