@@ -9,14 +9,17 @@ import com.cwstd.pojo.HostResult;
 import com.cwstd.pojo.MarriedPerson;
 import com.cwstd.pojo.PageResult;
 import com.cwstd.service.IMarriedPersonService;
+import com.cwstd.util.TenXunCloud;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 /**
  * <p>
@@ -50,15 +53,46 @@ public class MarriedPersonController {
 
     @ResponseBody
     @RequestMapping("reg")
-    public HostResult reg(MarriedPerson marriedPerson){
+    public HostResult reg(MarriedPerson marriedPerson,String code,HttpSession session){
+        String rcode=(String)session.getAttribute("code");
+        System.out.println(rcode);
         HostResult hostResult = new HostResult();
-        marriedPerson.setRegdate(LocalDateTime.now());
-        marriedPerson.setMarrydate(LocalDate.now());
-        marriedPerson.setStatus("1");
-        boolean insert = marriedPerson.insert();
-        hostResult.setSuccess(insert);
-        hostResult.setMsg("成功！");
+        if(code.equals(rcode)){
+            marriedPerson.setRegdate(LocalDateTime.now());
+            marriedPerson.setMarrydate(LocalDate.now());
+            marriedPerson.setStatus("1");
+            marriedPerson.insert();
+            hostResult.setSuccess(true);
+            hostResult.setMsg("成功！");
+        }else {
+            System.out.println("asdasdaasdasd");
+            hostResult.setSuccess(false);
+            hostResult.setMsg("失败！");
+        }
+        session.removeAttribute("code");
         return hostResult;
+    }
+
+    @ResponseBody
+    @RequestMapping("personCode")
+    public String personCode(String phonenumber, HttpSession session){
+        String res="NO";
+        TenXunCloud tenXunCloud = new TenXunCloud();
+        String str="0123456789";
+        StringBuilder sb=new StringBuilder(6);
+        for(int i=0;i<6;i++)
+        {
+            char ch=str.charAt(new Random().nextInt(str.length()));
+            sb.append(ch);
+        }
+        System.out.println(sb.toString());
+        boolean b = tenXunCloud.sendCode(sb.toString(), phonenumber);
+        if(b){
+            session.setAttribute("code",sb.toString());
+            res="OK";
+        }
+
+        return res;
     }
 }
 

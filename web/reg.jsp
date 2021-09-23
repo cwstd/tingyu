@@ -38,6 +38,10 @@
                             $.messager.alert("提示","新人注册成功","info",function () {
                                 window.location.href="protal.jsp";
                             });
+                        }else{
+                            $.messager.alert("提示","新人注册失败","error",function () {
+                                window.location.href="reg.jsp";
+                            });
                         }
                     }
                 })
@@ -151,7 +155,7 @@
                             <tr>
                                 <td>验证码:</td>
                                 <td>
-                                    <input class="easyui-textbox" style="width: 400px;"  prompt="验证码" >
+                                    <input name="code" class="easyui-textbox" style="width: 400px;"  prompt="验证码" >
                                 </td>
                             </tr>
                             <tr>
